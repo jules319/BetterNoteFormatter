@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "note-pdf-processor"
+version = "0.1.0"
+description = "Modifies pdf's to different formats helpful for note taking"
+authors = ["jules319 <jules31901@gmail.com>"]
+readme = "README.md"
+packages = [{include = "note_pdf_processor"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+tkinterdnd2 = "^0.3.0"
+pypdf2 = "^3.0.1"
+reportlab = "^4.0.4"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
