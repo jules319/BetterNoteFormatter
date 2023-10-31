@@ -36,13 +36,25 @@ class PDFProcessorView(TkinterDnD.Tk):
 
         # Queue Listbox with Scrollbar
         self.queue_frame = ttk.Frame(main_frame)
-        self.queue_frame.grid(row=2, column=0, pady=20, sticky="nsew", columnspan=2)
-        self.scrollbar = ttk.Scrollbar(self.queue_frame, orient="vertical")
-        self.queue_listbox = tk.Listbox(self.queue_frame, yscrollcommand=self.scrollbar.set, height=10, width=50)
-        self.scrollbar.config(command=self.queue_listbox.yview)
-        self.queue_listbox.grid(row=0, column=0, sticky="ew")
-        self.scrollbar.grid(row=0, column=1, sticky="ns")
+        self.queue_frame.grid(row=1, column=0, pady=20, sticky="nsew", columnspan=2)
+        main_frame.columnconfigure(0, weight=1)
+        main_frame.columnconfigure(1, weight=1)
+
+        self.v_scrollbar = ttk.Scrollbar(self.queue_frame, orient="vertical")
+        self.h_scrollbar = ttk.Scrollbar(self.queue_frame, orient="horizontal")
+
+        self.queue_listbox = tk.Listbox(self.queue_frame, yscrollcommand=self.v_scrollbar.set, xscrollcommand=self.h_scrollbar.set, height=10, width=50)
+        
+        self.v_scrollbar.config(command=self.queue_listbox.yview)
+        self.h_scrollbar.config(command=self.queue_listbox.xview)
+
+        self.queue_listbox.grid(row=0, column=0, sticky="nsew")
+        self.v_scrollbar.grid(row=0, column=1, sticky="ns")
+        self.h_scrollbar.grid(row=1, column=0, sticky="ew")
+
         self.queue_frame.columnconfigure(0, weight=1)
+        self.queue_frame.rowconfigure(0, weight=1)  # ensure Listbox expands vertically
+
 
         # Buttons Frame
         btn_frame = ttk.Frame(main_frame)
