@@ -43,7 +43,7 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.v_scrollbar = ttk.Scrollbar(self.queue_frame, orient="vertical")
         self.h_scrollbar = ttk.Scrollbar(self.queue_frame, orient="horizontal")
 
-        self.queue_listbox = tk.Listbox(self.queue_frame, yscrollcommand=self.v_scrollbar.set, xscrollcommand=self.h_scrollbar.set, height=10, width=50)
+        self.queue_listbox = tk.Listbox(self.queue_frame, yscrollcommand=self.v_scrollbar.set, xscrollcommand=self.h_scrollbar.set, height=10, width=50, selectmode=tk.MULTIPLE)
         
         self.v_scrollbar.config(command=self.queue_listbox.yview)
         self.h_scrollbar.config(command=self.queue_listbox.xview)
