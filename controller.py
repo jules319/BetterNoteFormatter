@@ -2,7 +2,7 @@ from pdf_processor import PDFProcessor
 import re
 import os
 import tkinter as tk
-import time
+# import time
 from tkinter import filedialog
 
 class PDFProcessorController:
@@ -121,11 +121,24 @@ class PDFProcessorController:
         self.view.overlay.progress_bar.start()  # Start the progress bar
 
         # TODO: Add processing code here
+        for file_name in self.pdf_queue:
+            input_path = self.full_paths[file_name]
+            output_file = self.create_output_filepath(input_path)
+            
+            error = PDFProcessor.add_whitespace(input_path, output_file)
+            if error:
+                # TODO: Implement error handling
+                print(error)
+                return
+
         self.clear_queue()
-        time.sleep(8)
         self.view.overlay.progress_bar.stop()  # Stop the progress bar
         self.view.show_completion_message(self.close_overlay)
         self._update_ui_state()
+
+    def create_output_filepath(filepath):
+        return os.path.splitext(filepath)[0] + "_modified.pdf"
+
 
     def cancel_processing(self):
         # TODO: add code to actually stop the processing 

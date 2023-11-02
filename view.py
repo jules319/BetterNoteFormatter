@@ -13,7 +13,7 @@ class PDFProcessorView(TkinterDnD.Tk):
         self._build_ui()
 
     def _setup_style(self):
-        style = ttk.Style(self)
+        # style = ttk.Style(self)
         pass
 
     def _build_ui(self):
