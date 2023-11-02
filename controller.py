@@ -9,7 +9,6 @@ class PDFProcessorController:
 
     def __init__(self, view):
         self.view = view
-        self.pdf_queue = set()
         self.full_paths = {}
         self._update_ui_state()
         # Connecting the widgets to their respective methods
@@ -25,7 +24,7 @@ class PDFProcessorController:
 
     def _update_ui_state(self):
         # Disable/Enable buttons based on the queue
-        if not self.pdf_queue:
+        if not self.full_paths:
             self.view.remove_btn.config(state=tk.DISABLED)
             self.view.clear_btn.config(state=tk.DISABLED)
         else:
@@ -44,12 +43,12 @@ class PDFProcessorController:
         paths = self._parse_dropped_data(data_str)
         
         for full_path in paths:
-            if full_path.endswith(".pdf") and os.path.isfile(full_path) and full_path not in self.pdf_queue:  # If it's a file, add directly
+            if full_path.endswith(".pdf") and os.path.isfile(full_path) and full_path not in self.full_paths:  # If it's a file, add directly
                 self._add_file_to_queue(full_path)
             elif os.path.isdir(full_path):  # If it's a directory, add all PDF files in it
                 for root, dirs, files in os.walk(full_path):
                     for file in files:
-                        if file.endswith(".pdf") and file not in self.pdf_queue:
+                        if file.endswith(".pdf") and file not in self.full_paths:
                             filepath = os.path.join(root, file)
                             self._add_file_to_queue(filepath, file)
         self._update_ui_state()
@@ -61,7 +60,7 @@ class PDFProcessorController:
         if folder_path:
             for root, dirs, files in os.walk(folder_path):
                 for file in files:
-                    if file.endswith(".pdf") and file not in self.pdf_queue:
+                    if file.endswith(".pdf") and file not in self.full_paths:
                         filepath = os.path.join(root, file)
                         self._add_file_to_queue(filepath, file)
         self._update_ui_state()
@@ -76,11 +75,10 @@ class PDFProcessorController:
         return paths
     
     def _add_file_to_queue(self, filepath, filename=None):
-            self.pdf_queue.add(filepath)
             if not filename:
                 filename = os.path.basename(filepath)
-            self.view.queue_listbox.insert(tk.END, filename)
-            self.full_paths[filename] = filepath
+            self.view.queue_listbox.insert(tk.END, filepath)
+            self.full_paths[filepath] = filename
 
     # This method will remove the selected items from the queue
     def remove_selected(self):
@@ -88,10 +86,9 @@ class PDFProcessorController:
         
         # Deleting from the end to avoid index shifting problems
         for index in reversed(selected_indices):
-            filename = self.view.queue_listbox.get(index)
-            filepath = self.full_paths.pop(filename, None)  # Remove from the full_paths dictionary
-            if filepath:
-                self.pdf_queue.discard(filepath)  # Remove from the pdf_queue set
+            filepath = self.view.queue_listbox.get(index)
+            del self.full_paths[filepath]  # Remove from the full_paths dictionary
+
             
             self.view.queue_listbox.delete(index)  # Remove from the Listbox
         self._update_ui_state()
@@ -99,7 +96,6 @@ class PDFProcessorController:
     # This method will clear the queue
     def clear_queue(self):
         self.view.queue_listbox.delete(0, tk.END)  # Remove all items from the Listbox
-        self.pdf_queue.clear()  # Clear the pdf_queue set
         self.full_paths.clear()  # Clear the full_paths dictionary
         self._update_ui_state()
 
@@ -120,24 +116,39 @@ class PDFProcessorController:
         self.view.create_processing_overlay(self.cancel_processing)  # Show the overlay
         self.view.overlay.progress_bar.start()  # Start the progress bar
 
-        # TODO: Add processing code here
-        for file_name in self.pdf_queue:
-            input_path = self.full_paths[file_name]
-            output_file = self.create_output_filepath(input_path)
-            
-            error = PDFProcessor.add_whitespace(input_path, output_file)
-            if error:
-                # TODO: Implement error handling
-                print(error)
-                return
+        output_folder = self.view.output_entry.get()  # TODO: Check output folder is valid
+        if not os.path.isdir(output_folder):
+            print("invalid output folder") # TODO: Implement error handling/logging/view message
+        else:
+            for file_name in self.full_paths:
+                output_file = self.create_output_filepath(output_folder, file_name)
+                error = PDFProcessor.add_whitespace(file_name, output_file)
+                if error:
+                    # TODO: Implement error handling/logging/view message
+                    print(error)
+                    break
 
         self.clear_queue()
         self.view.overlay.progress_bar.stop()  # Stop the progress bar
         self.view.show_completion_message(self.close_overlay)
         self._update_ui_state()
 
-    def create_output_filepath(filepath):
-        return os.path.splitext(filepath)[0] + "_modified.pdf"
+    def create_output_filepath(self, output_folder, filepath):
+        basename = os.path.basename(filepath)
+        filename, file_extension = os.path.splitext(basename)
+
+        # Define the initial modified filename
+        modified_filename = f"{filename}_mod{file_extension}"
+        output_filepath = os.path.join(output_folder, modified_filename)
+
+        # Check if the file already exists and modify the filename if it does
+        counter = 1
+        while os.path.exists(output_filepath):
+            modified_filename = f"{filename}_mod({counter}){file_extension}"
+            output_filepath = os.path.join(output_folder, modified_filename)
+            counter += 1
+
+        return output_filepath
 
 
     def cancel_processing(self):
