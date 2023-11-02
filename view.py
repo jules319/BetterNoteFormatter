@@ -67,10 +67,10 @@ class PDFProcessorView(TkinterDnD.Tk):
         # Output Frame
         output_frame = ttk.Labelframe(self.window, text= "Output Folder:")
         output_frame.grid(row=4, column=0, pady=20, sticky="ew", columnspan=2)
-        self.output_entry = ttk.Entry(output_frame, width=40)
-        self.output_entry.grid(row=0, column=1, padx=10, sticky="ew")
+        self.output_entry = ttk.Entry(output_frame, width=35)
+        self.output_entry.pack(side=tk.LEFT, padx=10, pady=5)#.grid(row=0, column=1, padx=10)
         self.output_btn = ttk.Button(output_frame, text="Browse")
-        self.output_btn.grid(row=0, column=2, padx=10)
+        self.output_btn.pack(side=tk.RIGHT, padx=10, pady=5) #grid(row=0, column=2, padx=10)
 
         # Process PDFs button
         self.process_btn = ttk.Button(self.window, text="Process PDFs")
