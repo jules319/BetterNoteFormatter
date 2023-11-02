@@ -18,11 +18,11 @@ class PDFProcessorView(TkinterDnD.Tk):
 
     def _build_ui(self):
         # Main frame
-        main_frame = ttk.Frame(self)
-        main_frame.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
+        self.window = ttk.Frame(self)
+        self.window.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
 
         # Drag and Drop Area
-        self.drop_frame = ttk.Labelframe(main_frame, width=400, height=150)  # Removed the text
+        self.drop_frame = ttk.Labelframe(self.window, width=400, height=150)  # Removed the text
         self.drop_frame.grid(row=0, column=0, pady=20, sticky="ew", columnspan=2)
         self.drop_frame.drop_target_register(DND_FILES)
         self.drop_label = ttk.Label(self.drop_frame, text="Drag & Drop PDFs here or")
@@ -31,14 +31,14 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.folder_btn.place(relx=0.5, rely=0.7, anchor=tk.CENTER)
 
         # Text above the Listbox file queue
-        queue_label = ttk.Label(main_frame, text="Files to be processed:")
+        queue_label = ttk.Label(self.window, text="Files to be processed:")
         queue_label.grid(row=1, column=0, sticky="w", padx=10)
 
         # Queue Listbox with Scrollbar
-        self.queue_frame = ttk.Frame(main_frame)
+        self.queue_frame = ttk.Frame(self.window)
         self.queue_frame.grid(row=1, column=0, pady=20, sticky="nsew", columnspan=2)
-        main_frame.columnconfigure(0, weight=1)
-        main_frame.columnconfigure(1, weight=1)
+        self.window.columnconfigure(0, weight=1)
+        self.window.columnconfigure(1, weight=1)
 
         self.v_scrollbar = ttk.Scrollbar(self.queue_frame, orient="vertical")
         self.h_scrollbar = ttk.Scrollbar(self.queue_frame, orient="horizontal")
@@ -57,7 +57,7 @@ class PDFProcessorView(TkinterDnD.Tk):
 
 
         # Buttons Frame
-        btn_frame = ttk.Frame(main_frame)
+        btn_frame = ttk.Frame(self.window)
         btn_frame.grid(row=3, column=0, pady=20, sticky="ew", columnspan=2)
         self.remove_btn = ttk.Button(btn_frame, text="Remove Selected")
         self.remove_btn.pack(side=tk.LEFT, padx=10, pady=5)
@@ -65,7 +65,7 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.clear_btn.pack(side=tk.RIGHT, padx=10, pady=5)
 
         # Output Frame
-        output_frame = ttk.Labelframe(main_frame, text= "Output Folder:")
+        output_frame = ttk.Labelframe(self.window, text= "Output Folder:")
         output_frame.grid(row=4, column=0, pady=20, sticky="ew", columnspan=2)
         self.output_entry = ttk.Entry(output_frame, width=40)
         self.output_entry.grid(row=0, column=1, padx=10, sticky="ew")
@@ -73,15 +73,38 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.output_btn.grid(row=0, column=2, padx=10)
 
         # Process PDFs button
-        self.process_btn = ttk.Button(main_frame, text="Process PDFs")
+        self.process_btn = ttk.Button(self.window, text="Process PDFs")
         self.process_btn.grid(row=5, column=0, columnspan=2, pady=10)
 
-        # Text above Progress bar
-        progress_label = ttk.Label(main_frame, text="Processing Files...")
-        progress_label.grid(row=6, column=0, columnspan=2, pady=10, sticky="w", padx=10)
+    def create_processing_overlay(self, cancel_command):
+        self.overlay = tk.Toplevel(self)
+        self.overlay.title("Processing")
+        self.overlay.geometry("300x150")
+        self.overlay.resizable(False, False)
 
-        # Progress Bar
-        self.progress = ttk.Progressbar(main_frame, orient="horizontal", length=300, mode="determinate")
-        self.progress.grid(row=7, column=0, columnspan=2, pady=20, padx=10, sticky="ew")
-        main_frame.columnconfigure(0, weight=1)
-        output_frame.columnconfigure(1, weight=3)
+        # Progress bar
+        self.overlay.progress_bar = ttk.Progressbar(self.overlay, mode='indeterminate')
+        self.overlay.progress_bar.pack(pady=20, padx=20)
+
+        # Status label
+        self.overlay.status_label = ttk.Label(self.overlay, text="Processing files...")
+        self.overlay.status_label.pack()
+
+        # Cancel button
+        self.overlay.cancel_btn = ttk.Button(self.overlay, text="Cancel", command=cancel_command)
+        self.overlay.cancel_btn.pack(pady=10)
+
+
+    def show_completion_message(self, ok_command):
+        # Clear all widgets from the overlay
+        for widget in self.overlay.winfo_children():
+            widget.destroy()
+
+        # Completion label
+        self.overlay.completion_label = ttk.Label(self.overlay, text="Processing Completed!")
+        self.overlay.completion_label.pack(pady=20)
+
+        # OK button
+        self.overlay.ok_button = ttk.Button(self.overlay, text="OK", command=ok_command)
+        self.overlay.ok_button.pack(pady=10)
+

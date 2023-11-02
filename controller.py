@@ -2,6 +2,7 @@ from pdf_processor import PDFProcessor
 import re
 import os
 import tkinter as tk
+import time
 from tkinter import filedialog
 
 class PDFProcessorController:
@@ -36,10 +37,6 @@ class PDFProcessorController:
             self.view.process_btn.config(state=tk.DISABLED)
         else:
             self.view.process_btn.config(state=tk.NORMAL)
-
-        # Initially, hide the processing label and progress bar
-        # self.view.progress.grid_remove()
-        # self.view.process_btn.grid(row=6, column=0, columnspan=2, pady=10, sticky="ew", padx=10)
 
     # This method will handle the dropped files into the application
     def files_or_folders_on_drop(self, event):
@@ -120,13 +117,23 @@ class PDFProcessorController:
 
     # This method will process the files
     def process_files(self):
-        # Show the processing label and progress bar
-        # self.view.progress.grid()
-        # self.view.process_btn.grid(row=7, column=0, columnspan=2, pady=10, sticky="ew", padx=10)
-        
+        self.view.create_processing_overlay(self.cancel_processing)  # Show the overlay
+        self.view.overlay.progress_bar.start()  # Start the progress bar
+
         # TODO: Add processing code here
         self.clear_queue()
-        # After processing, hide them again and update UI
-        # self.view.progress.grid_remove()
-        # self._update_ui_state()
+        time.sleep(8)
+        self.view.overlay.progress_bar.stop()  # Stop the progress bar
+        self.view.show_completion_message(self.close_overlay)
+        self._update_ui_state()
+
+    def cancel_processing(self):
+        # TODO: add code to actually stop the processing 
+
+        self.view.overlay.progress_bar.stop()  # Stop the progress bar
+        self.close_overlay()  # Close the overlay
+
+
+    def close_overlay(self):
+        self.view.overlay.destroy()
 
