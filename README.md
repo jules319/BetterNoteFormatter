@@ -1,4 +1,4 @@
-# PDF Margin Enhancer
+# PDF Side Margin Tool
 
 ## Introduction
 The PDF Margin Enhancer is a Python-based GUI application designed for students who need extra space for notes on PDF documents. It enables users to add a customizable margin of whitespace along the side of each page of PDF files for additional note-taking space. This tool is especially useful for annotating class slides or documents on devices like iPads.
