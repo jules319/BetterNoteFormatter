@@ -2,8 +2,6 @@ from pdf_processor import PDFProcessor
 import re
 import os
 import tkinter as tk
-# import time
-from tkinter import filedialog
 
 class PDFProcessorController:
 
@@ -55,7 +53,7 @@ class PDFProcessorController:
 
     # This method will open a dialog for folder selection
     def select_folder(self):
-        folder_path = filedialog.askdirectory()  # Open a dialog to choose a folder
+        folder_path = tk.filedialog.askdirectory()  # Open a dialog to choose a folder
 
         if folder_path:
             for root, dirs, files in os.walk(folder_path):
@@ -102,7 +100,7 @@ class PDFProcessorController:
     # This method will open a dialog for output folder selection
     def browse_output_folder(self):
         # Open a dialog to choose a folder and store the selected path
-        output_folder_path = filedialog.askdirectory()
+        output_folder_path = tk.filedialog.askdirectory()
 
         # Check if a folder was selected
         if output_folder_path:
