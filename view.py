@@ -7,8 +7,8 @@ class PDFProcessorView(TkinterDnD.Tk):
     def __init__(self):
         super().__init__()
         self.title("PDF Processor")
-        self.geometry("500x750")  
-        self.minsize(500, 750)  
+        self.geometry("500x667")  
+        self.minsize(500, 667)  
         self._setup_style()
         self._build_ui()
 
@@ -67,7 +67,7 @@ class PDFProcessorView(TkinterDnD.Tk):
         # Output Frame
         output_frame = ttk.Labelframe(self.window, text= "Output Folder:")
         output_frame.grid(row=4, column=0, pady=20, sticky="ew", columnspan=2)
-        self.output_entry = ttk.Entry(output_frame, width=35)
+        self.output_entry = ttk.Entry(output_frame, width=25)
         self.output_entry.pack(side=tk.LEFT, padx=10, pady=5)#.grid(row=0, column=1, padx=10)
         self.output_btn = ttk.Button(output_frame, text="Browse")
         self.output_btn.pack(side=tk.RIGHT, padx=10, pady=5) #grid(row=0, column=2, padx=10)
