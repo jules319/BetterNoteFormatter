@@ -1,14 +1,15 @@
 import tkinter as tk
 from tkinter import ttk
+
 from tkinterdnd2 import DND_FILES, TkinterDnD
 
-class PDFProcessorView(TkinterDnD.Tk):
 
+class PDFProcessorView(TkinterDnD.Tk):
     def __init__(self):
         super().__init__()
         self.title("PDF Processor")
-        self.geometry("500x667")  
-        self.minsize(500, 667)  
+        self.geometry("500x667")
+        self.minsize(500, 667)
         self._setup_style()
         self._build_ui()
 
@@ -22,7 +23,9 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.window.pack(padx=10, pady=10, expand=True, fill=tk.BOTH)
 
         # Drag and Drop Area
-        self.drop_frame = ttk.Labelframe(self.window, width=400, height=150)  # Removed the text
+        self.drop_frame = ttk.Labelframe(
+            self.window, width=400, height=150
+        )  # Removed the text
         self.drop_frame.grid(row=0, column=0, pady=20, sticky="ew", columnspan=2)
         self.drop_frame.drop_target_register(DND_FILES)
         self.drop_label = ttk.Label(self.drop_frame, text="Drag & Drop PDFs here or")
@@ -43,8 +46,15 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.v_scrollbar = ttk.Scrollbar(self.queue_frame, orient="vertical")
         self.h_scrollbar = ttk.Scrollbar(self.queue_frame, orient="horizontal")
 
-        self.queue_listbox = tk.Listbox(self.queue_frame, yscrollcommand=self.v_scrollbar.set, xscrollcommand=self.h_scrollbar.set, height=10, width=50, selectmode=tk.MULTIPLE)
-        
+        self.queue_listbox = tk.Listbox(
+            self.queue_frame,
+            yscrollcommand=self.v_scrollbar.set,
+            xscrollcommand=self.h_scrollbar.set,
+            height=10,
+            width=50,
+            selectmode=tk.MULTIPLE,
+        )
+
         self.v_scrollbar.config(command=self.queue_listbox.yview)
         self.h_scrollbar.config(command=self.queue_listbox.xview)
 
@@ -55,7 +65,6 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.queue_frame.columnconfigure(0, weight=1)
         self.queue_frame.rowconfigure(0, weight=1)  # ensure Listbox expands vertically
 
-
         # Buttons Frame
         btn_frame = ttk.Frame(self.window)
         btn_frame.grid(row=3, column=0, pady=20, sticky="ew", columnspan=2)
@@ -65,12 +74,16 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.clear_btn.pack(side=tk.RIGHT, padx=10, pady=5)
 
         # Output Frame
-        output_frame = ttk.Labelframe(self.window, text= "Output Folder:")
+        output_frame = ttk.Labelframe(self.window, text="Output Folder:")
         output_frame.grid(row=4, column=0, pady=20, sticky="ew", columnspan=2)
         self.output_entry = ttk.Entry(output_frame, width=25)
-        self.output_entry.pack(side=tk.LEFT, padx=10, pady=5)#.grid(row=0, column=1, padx=10)
+        self.output_entry.pack(
+            side=tk.LEFT, padx=10, pady=5
+        )  # .grid(row=0, column=1, padx=10)
         self.output_btn = ttk.Button(output_frame, text="Browse")
-        self.output_btn.pack(side=tk.RIGHT, padx=10, pady=5) #grid(row=0, column=2, padx=10)
+        self.output_btn.pack(
+            side=tk.RIGHT, padx=10, pady=5
+        )  # grid(row=0, column=2, padx=10)
 
         # Process PDFs button
         self.process_btn = ttk.Button(self.window, text="Process PDFs")
@@ -83,7 +96,7 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.overlay.resizable(False, False)
 
         # Progress bar
-        self.overlay.progress_bar = ttk.Progressbar(self.overlay, mode='indeterminate')
+        self.overlay.progress_bar = ttk.Progressbar(self.overlay, mode="indeterminate")
         self.overlay.progress_bar.pack(pady=20, padx=20)
 
         # Status label
@@ -91,9 +104,10 @@ class PDFProcessorView(TkinterDnD.Tk):
         self.overlay.status_label.pack()
 
         # Cancel button
-        self.overlay.cancel_btn = ttk.Button(self.overlay, text="Cancel", command=cancel_command)
+        self.overlay.cancel_btn = ttk.Button(
+            self.overlay, text="Cancel", command=cancel_command
+        )
         self.overlay.cancel_btn.pack(pady=10)
-
 
     def show_completion_message(self, ok_command):
         # Clear all widgets from the overlay
@@ -101,10 +115,11 @@ class PDFProcessorView(TkinterDnD.Tk):
             widget.destroy()
 
         # Completion label
-        self.overlay.completion_label = ttk.Label(self.overlay, text="Processing Completed!")
+        self.overlay.completion_label = ttk.Label(
+            self.overlay, text="Processing Completed!"
+        )
         self.overlay.completion_label.pack(pady=20)
 
         # OK button
         self.overlay.ok_button = ttk.Button(self.overlay, text="OK", command=ok_command)
         self.overlay.ok_button.pack(pady=10)
-
