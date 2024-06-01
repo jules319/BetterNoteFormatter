@@ -3,24 +3,16 @@ requires = ["setuptools"]
 
 [project]
 name = "pdfsidemargin"
-authors = [
-    {name = "Julian Colbert", email = "juliankcolbert@outlook.com"},
-]
+authors = [{ name = "Julian Colbert", email = "juliankcolbert@outlook.com" }]
 description = "The PDF Margin Enhancer is a Python-based GUI application designed for students who need extra space for notes on PDF documents."
 readme = "README.md"
 requires-python = ">=3.10"
-classifiers = [
-    "Programming Language :: Python :: 3",
-]
-dependencies = [
-    "tkinterdnd2",
-    "pypdf2",
-]
+classifiers = ["Programming Language :: Python :: 3"]
+dependencies = ["tkinterdnd2", "pypdf2"]
 dynamic = ["version"]
 
-
 [project.scripts]
-my-script = "my_package.module:function"
+my-script = "pdfsidemargin.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
